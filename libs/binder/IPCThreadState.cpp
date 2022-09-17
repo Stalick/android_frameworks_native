@@ -1273,12 +1273,12 @@ status_t IPCThreadState::executeCommand(int32_t cmd)
             // This is recoding libselinux's getpidcon()
             // We are in a NDK lib, so we need to keep changes to a minimum
             bool allocatedSid = false;
-            if(mCallingSid == nullptr && mCallingPid != 0) {
+            if (mCallingSid == nullptr && mCallingPid != 0) {
                 char buf[4096];
                 char *path = NULL;
                 (void)asprintf(&path, "/proc/%d/attr/current", mCallingPid);
                 int fd = open(path, O_RDONLY | O_CLOEXEC);
-                if(fd != -1) {
+                if (fd != -1) {
                     int readRet = read(fd, buf, sizeof(buf)-1);
                     if(readRet != -1) {
                         buf[readRet] = 0;
@@ -1287,6 +1287,7 @@ status_t IPCThreadState::executeCommand(int32_t cmd)
                     }
                     close(fd);
                 }
+                free(path);
             }
 
             // ALOGI(">>>> TRANSACT from pid %d sid %s uid %d\n", mCallingPid,
@@ -1353,7 +1354,7 @@ status_t IPCThreadState::executeCommand(int32_t cmd)
 
             mServingStackPointer = origServingStackPointer;
             mCallingPid = origPid;
-	    if(allocatedSid) free((void*)mCallingSid);
+            if (allocatedSid) free((void*)mCallingSid);
             mCallingSid = origSid;
             mCallingUid = origUid;
             mStrictModePolicy = origStrictModePolicy;
